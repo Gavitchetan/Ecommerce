@@ -15,7 +15,7 @@ const router = express.Router();
 
 // Properly structured routes with placeholders
 
-router.get('/products', isAuthenticated, getAllproduct);
+router.get('/products', getAllproduct);
 router.post('/admin/products/new', isAuthenticated, autheriseRole('admin'), createProduct);
 router.put('/product/review', isAuthenticated, createProductReview);
 router.get('/product/reviews', Getallreviews);
