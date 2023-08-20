@@ -11,18 +11,10 @@ config({
     path: "./data/info.env"
 });
 export const app = express();
-
+app.use(cors())
 import { ErrorsMiddleware } from "./middlewares/erorr.js";
 import userRouter from "./routes/Userroutes.js";
 import cookieParser from "cookie-parser";
-app.use(
-    cors({
-        origin: [process.env.FRONTEND_URL],
-        methods: ["GET", "POST", "PUT", "DELETE"],
-        credentials: true,
-    })
-);
-
 
 
 
