@@ -34,7 +34,8 @@ export const getAllproduct = async (req, res, next) => {
             message: "Here are all the products",
             // lent: products.length,
             productCount,
-            products
+            products,
+            resultPerPage
         });
     } catch (error) {
         next(error);
@@ -157,6 +158,7 @@ export const Getallreviews = async (req, res, next) => {
         res.status(200).json({
             success: true,
             review: product.reviews,
+
         })
 
     } catch (error) {
