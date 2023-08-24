@@ -13,58 +13,59 @@ export const createProduct = async (req, res, next) => {
         next(error)
     }
 }
-// export const getAllproduct = async (req, res, next) => {
-//     try {
-//         //  Api filter for serch make send PRoduct.find as query and req.qery (users query) then add .Function() 
-//         // where  serhc option  add class name of who is parent of all the filter function then query like Apifiterc.query ;
-//         const resultPerPage = 7;
-//         const Apifecher = new Apifeacherswithwihtserchfilter(Product.find(), req.query)
-//             .Searches()
-//             .filter().
-//             pagination(resultPerPage);
-//         // console.log(Apifecher.query)
-//         Apifecher.pagination(resultPerPage)
-//         const products = await Apifecher.query;
-//         const productCount = await Product.countDocuments()
-//         if (products.length === 0) {
-//             return next(new ErrorHandler(404, 'Products not found'));
-//         }
 
-//         res.status(200).json({
-//             message: "Here are all the products",
-//             // lent: products.length,
-//             productCount,
-//             products,
-//             resultPerPage
-//         });
-//     } catch (error) {
-//         next(error);
-//     }
+
+// The commented-out function is provided below with corrected code:
+
+// export const getAllproduct = async (req, res, next) => {
+//     const resultPerPage = 8;
+//     const productsCount = await Product.countDocuments();
+
+//     const apiFeature = new Apifeacherswithwihtserchfilter(Product.find(), req.query)
+//         .Searches()
+//         .filter();
+
+//     let products = await apiFeature.query;
+//     let filteredProductsCount = products.length;
+
+//     apiFeature.pagination(resultPerPage);
+
+//     products = await apiFeature.query;
+
+//     res.status(200).json({
+//         success: true,
+//         products,
+//         productsCount,
+//         resultPerPage,
+//         filteredProductsCount,
+//     });
 // };
 
 export const getAllproduct = async (req, res, next) => {
     const resultPerPage = 8;
-    const productsCount = await Product.countDocuments();
+    try {
+        const productsCount = await Product.countDocuments();
 
-    const apiFeature = new Apifeacherswithwihtserchfilter(Product.find(), req.query)
-        .Searches()
-        .filter();
+        const apiFeature = new Apifeacherswithwihtserchfilter(Product.find(), req.query)
+            .Searches()
+            .filter()
+            .pagination(resultPerPage)
 
 
-    let filteredProductsCount = products.length;
-
-    apiFeature.pagination(resultPerPage);
-
-    let products = await apiFeature.query;
-    // products = await apiFeature.query;
-
-    res.status(200).json({
-        success: true,
-        products,
-        productsCount,
-        resultPerPage,
-        filteredProductsCount,
-    });
+        let products = await apiFeature.query;
+        console.log('pge')
+        console.log('lst query')
+        res.status(200).json({
+            success: true,
+            products,
+            productsCount,
+            resultPerPage,
+            // filteredProductsCount,
+        });
+    } catch (error) {
+        // Handle the error appropriately
+        res.status(500).json({ success: false, error: "Internal server error" });
+    }
 };
 
 export const UpdateProduct = async (req, res, next) => {
