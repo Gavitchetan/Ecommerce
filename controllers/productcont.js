@@ -47,7 +47,7 @@ export const getAllproduct = async (req, res, next) => {
     const productsCount = await Product.countDocuments();
 
     const apiFeature = new Apifeacherswithwihtserchfilter(Product.find(), req.query)
-        .search()
+        .Searches()
         .filter();
 
     let products = await apiFeature.query;
