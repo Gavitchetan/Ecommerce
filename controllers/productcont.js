@@ -50,13 +50,13 @@ export const getAllproduct = async (req, res, next) => {
         .Searches()
         .filter();
 
-    let products = await apiFeature.query;
 
     let filteredProductsCount = products.length;
 
     apiFeature.pagination(resultPerPage);
 
-    products = await apiFeature.query;
+    let products = await apiFeature.query;
+    // products = await apiFeature.query;
 
     res.status(200).json({
         success: true,
