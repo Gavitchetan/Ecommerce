@@ -17,17 +17,19 @@ export const getAllproduct = async (req, res, next) => {
     try {
         //  Api filter for serch make send PRoduct.find as query and req.qery (users query) then add .Function() 
         // where  serhc option  add class name of who is parent of all the filter function then query like Apifiterc.query ;
-        const resultPerPage = 10;
+        const resultPerPage = 8;
         const Apifecher = new Apifeacherswithwihtserchfilter(Product.find(), req.query)
             .Searches()
             .filter().
             pagination(resultPerPage);
-        const products = await Apifecher.query;
         // console.log(Apifecher.query)
+        Apifecher.pagination(resultPerPage)
+        const products = await Apifecher.query;
         const productCount = await Product.countDocuments()
         if (products.length === 0) {
             return next(new ErrorHandler(404, 'Products not found'));
         }
+
         res.status(200).json({
             message: "Here are all the products",
             // lent: products.length,
