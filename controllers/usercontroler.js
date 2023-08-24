@@ -42,7 +42,7 @@ export const Loginuser = async (req, res, next) => {
         return next(new ErrorHandler(404), 'user not found')
     }
     try {
-        const user = await UserModel.findOne({ email }).select("+password");
+        const user = await UserModel.findOne({ email: email }).select("+password");
         if (!user) {
             return res.status(400).json({ error: 'User not found. Please create an account.' });
         }
