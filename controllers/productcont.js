@@ -17,7 +17,7 @@ export const getAllproduct = async (req, res, next) => {
     try {
         //  Api filter for serch make send PRoduct.find as query and req.qery (users query) then add .Function() 
         // where  serhc option  add class name of who is parent of all the filter function then query like Apifiterc.query ;
-        const resultPerPage = 8;
+        const resultPerPage = 7;
         const Apifecher = new Apifeacherswithwihtserchfilter(Product.find(), req.query)
             .Searches()
             .filter().
