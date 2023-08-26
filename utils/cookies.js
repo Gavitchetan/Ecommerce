@@ -7,6 +7,7 @@ const Cookies = (res, statuscode, message, user) => {
     }).json({
         message: message,
         user: user,
+        token
     });
 }
 
