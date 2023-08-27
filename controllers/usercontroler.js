@@ -4,12 +4,17 @@ import bcrypt from 'bcrypt'
 import Cookies from "../utils/cookies.js";
 import { sendEmail } from '../utils/sendemail.js'
 import crypto from "crypto"
+import cloudinary from "cloudinary"
 import sendMessage from "../utils/Messstatus.js";
 
 export const newuSer = async (req, res, next) => {
     try {
         const { email, password, name } = req.body;
-
+        const mycloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+            folder: "avatars",
+            width: 150,
+            crop: "scale"
+        })
         const isUser = await UserModel.findOne({ email });
         if (isUser) {
             return next(new ErrorHandler(400, 'User is already exist'))
@@ -17,8 +22,8 @@ export const newuSer = async (req, res, next) => {
         const Hashpass = await bcrypt.hash(password, 10);
         const user = await UserModel.create({
             Avatar: {
-                public_id: 'this is an id ',
-                url: 'This is an static url'
+                public_id: mycloud.public_id,
+                url: mycloud.secure_url
             },
             name,
             email,
