@@ -10,7 +10,9 @@ import sendMessage from "../utils/Messstatus.js";
 export const newuSer = async (req, res, next) => {
     try {
         const { userData } = req.body;
-        const mycloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+        const { email, password, avatar, name } = userData;
+
+        const mycloud = await cloudinary.v2.uploader.upload(userData.avatar, {
             folder: "avatars",
             width: 150,
             crop: "scale"
@@ -19,20 +21,21 @@ export const newuSer = async (req, res, next) => {
         if (isUser) {
             return next(new ErrorHandler(400, 'User is already exist'))
         }
-        const Hashpass = await bcrypt.hash(userData.password, 10);
+        const Hashpass = await bcrypt.hash(password, 10);
         const user = await UserModel.create({
             Avatar: {
                 public_id: mycloud.public_id,
                 url: mycloud.secure_url
             },
-            name: userData.name,
-            email: userData.email,
+            name: name,
+            email: email,
             password: Hashpass,
         })
 
         res.status(200).json({
             message: "account is created ",
             success: true,
+            user,
         })
 
     } catch (error) {
