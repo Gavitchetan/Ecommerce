@@ -9,24 +9,24 @@ import sendMessage from "../utils/Messstatus.js";
 
 export const newuSer = async (req, res, next) => {
     try {
-        const { email, password, name } = req.body;
+        const { userData } = req.body;
         const mycloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
             folder: "avatars",
             width: 150,
             crop: "scale"
         })
-        const isUser = await UserModel.findOne({ email });
+        const isUser = await UserModel.findOne({ email: userData.email });
         if (isUser) {
             return next(new ErrorHandler(400, 'User is already exist'))
         }
-        const Hashpass = await bcrypt.hash(password, 10);
+        const Hashpass = await bcrypt.hash(userData.password, 10);
         const user = await UserModel.create({
             Avatar: {
                 public_id: mycloud.public_id,
                 url: mycloud.secure_url
             },
-            name,
-            email,
+            name: userData.name,
+            email: userData.email,
             password: Hashpass,
         })
 
