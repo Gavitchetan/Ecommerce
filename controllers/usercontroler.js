@@ -10,9 +10,9 @@ import sendMessage from "../utils/Messstatus.js";
 export const newuSer = async (req, res, next) => {
     try {
         const { userData } = req.body;
-        const { email, password, avatar, name } = userData;
+        const { email, password, name } = userData;
 
-        const mycloud = await cloudinary.v2.uploader.upload(userData.avatar, {
+        const mycloud = await cloudinary.uploader.upload(req.file.path, {
             folder: "avatars",
             width: 150,
             crop: "scale"
