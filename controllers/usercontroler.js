@@ -11,10 +11,8 @@ import fs from 'fs';
 
 export const Register = async (req, res, next) => {
     try {
-        const { username, email, password } = req.body;
-        // const { path } = req.file; // Get the path to the uploaded image
+        const { name, email, password } = req.body;
 
-        // const { data } = await cloudinary.uploader.upload
         if (!req.file.path) {
             console.log('img is not found')
             return next(new ErrorHandler(404, "Image is not recived"))
@@ -22,13 +20,22 @@ export const Register = async (req, res, next) => {
         const result = await cloudinary.uploader.upload(req.file.path, {
             folder: 'avatars',
         });
-        console.log(req.file)
-        console.log('Cloudinary result:', result);
+        const hashedPassword = await bcrypt.hash(10, password);
+        console.log(hashedPassword)
+
+        const { user } = await UserModel.create({
+            name, email, password: hashedPassword,
+            Avatar: {
+                public_id: myCloud.public_id,
+                url: myCloud.secure_url,
+            }
+        })
+        console.log(data)
 
 
         fs.unlinkSync(req.file.path); // Delete the file from the local 'uploads' folder
 
-        res.status(201).json({ message: 'User registered successfully' });
+        res.status(201).json({ message: 'User registered successfully', user });
     } catch (error) {
         console.log(error)
         res.status(400).json({
