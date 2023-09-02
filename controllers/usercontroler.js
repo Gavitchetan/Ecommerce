@@ -4,50 +4,48 @@ import bcrypt from 'bcrypt'
 import Cookies from "../utils/cookies.js";
 import { sendEmail } from '../utils/sendemail.js'
 import crypto from "crypto"
-import cloudinary from "cloudinary"
 import sendMessage from "../utils/Messstatus.js";
+import cloudinary from 'cloudinary';
+import fs from 'fs';
+// Other imports...
 
-export const newuSer = async (req, res, next) => {
+export const Register = async (req, res, next) => {
     try {
-        const { userData } = req.body;
-        const { email, password, name } = userData;
+        const { username, email, password } = req.body;
+        // const { path } = req.file; // Get the path to the uploaded image
 
-        const mycloud = await cloudinary.uploader.upload(req.file.path, {
-            folder: "avatars",
-            width: 150,
-            crop: "scale"
-        })
-        const isUser = await UserModel.findOne({ email: userData.email });
-        if (isUser) {
-            return next(new ErrorHandler(400, 'User is already exist'))
+        // const { data } = await cloudinary.uploader.upload
+        if (!req.file.path) {
+            console.log('img is not found')
+            return next(new ErrorHandler(404, "Image is not recived"))
         }
-        const Hashpass = await bcrypt.hash(password, 10);
-        const user = await UserModel.create({
-            Avatar: {
-                public_id: mycloud.public_id,
-                url: mycloud.secure_url
-            },
-            name: name,
-            email: email,
-            password: Hashpass,
-        })
+        const result = await cloudinary.uploader.upload(req.file.path, {
+            folder: 'avatars',
+        });
+        console.log(req.file)
+        console.log('Cloudinary result:', result);
 
-        res.status(200).json({
-            message: "account is created ",
-            success: true,
-            user,
-        })
 
+        fs.unlinkSync(req.file.path); // Delete the file from the local 'uploads' folder
+
+        res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
-        next()
+        console.log(error)
+        res.status(400).json({
+            MEssage: error,
+        })
     }
 }
 
 
+
+
+
 export const Loginuser = async (req, res, next) => {
     const { email, password } = req.body;
+    console.log(req.body)
     if (!email || !password) {
-        return next(new ErrorHandler(404), 'user not found')
+        return next(new ErrorHandler(400), 'please etner email or password')
     }
     try {
         const user = await UserModel.findOne({ email: email }).select("+password");
