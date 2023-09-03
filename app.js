@@ -10,7 +10,7 @@ import cookieParser from "cookie-parser";
 import { config } from "dotenv";
 
 config({
-    path: "./data/INFO.env",
+    path: "./data/info.env",
 });
 
 export const app = express();

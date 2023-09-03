@@ -9,41 +9,53 @@ import cloudinary from 'cloudinary';
 import fs from 'fs';
 // Other imports...
 
+
 export const Register = async (req, res, next) => {
     try {
         const { name, email, password } = req.body;
+        console.log(req.file)
+        console.log(req.body)
+        if (!req.file || !req.file.path) {
 
-        if (!req.file.path) {
-            console.log('img is not found')
-            return next(new ErrorHandler(404, "Image is not recived"))
+            console.log('Image is not found');
+            return next(new ErrorHandler(404, "Image is not received"));
+        }
+        const isuser = await UserModel.findOne({ email });
+        if (isuser) {
+            fs.unlinkSync(req.file.path);
+
+            console.log('You are alredy Account ')
+            return next(new ErrorHandler(400, "you have allredy accout "))
+
         }
         const result = await cloudinary.uploader.upload(req.file.path, {
             folder: 'avatars',
         });
-        const hashedPassword = await bcrypt.hash(10, password);
-        console.log(hashedPassword)
 
-        const { user } = await UserModel.create({
-            name, email, password: hashedPassword,
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const user = await UserModel.create({
+            name,
+            email,
+            password: hashedPassword,
+        // Change 'avatar' to 'Avatar' to match the schema
             Avatar: {
-                public_id: myCloud.public_id,
-                url: myCloud.secure_url,
-            }
-        })
-        console.log(data)
+                public_id: result.public_id,
+                url: result.secure_url,
+            },
+        });
 
-
-        fs.unlinkSync(req.file.path); // Delete the file from the local 'uploads' folder
+        console.log(result, 'res')
+        fs.unlinkSync(req.file.path);
 
         res.status(201).json({ message: 'User registered successfully', user });
     } catch (error) {
-        console.log(error)
+        console.error(error);
         res.status(400).json({
-            MEssage: error,
-        })
+            message: error.message || 'An error occurred during registration.',
+        });
     }
-}
-
+};
 
 
 
