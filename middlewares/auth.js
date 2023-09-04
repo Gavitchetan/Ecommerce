@@ -4,11 +4,16 @@ import ErrorHandler from './erorr.js';
 import UserModel from '../models/Usermode.js';
 
 export const isAuthenticated = async (req, res, next) => {
+    const { token } = req.cookies;
     try {
-        const { token } = req.cookies;
+        console.log(token)
+
+
         if (!token) {
+            console.log('token not found from frontend')
             return next(new ErrorHandler(401, 'Please log in to access this resource.'));
         }
+        console.log('')
         const decoded = jwt.verify(token, process.env.Jwt_secret);
         const user = await UserModel.findById(decoded.id); // Change '_id' to 'id'
         if (!user) {

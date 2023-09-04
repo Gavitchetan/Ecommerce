@@ -22,7 +22,7 @@ router.post("/user/new", upload.single("avatar"), Register);
 
 
 
-router.route('api/v1/user/login').post(Loginuser)
+router.route('/user/login').post(Loginuser)
 router.route('/user/logout').get(isAuthenticated, Logout)
 router.route('/user/me').get(isAuthenticated, GetmYprofile)
 router.route('/user/password/forgot').post(ForgotPasswrod)

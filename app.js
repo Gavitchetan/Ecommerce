@@ -15,11 +15,17 @@ config({
 
 export const app = express();
 
-app.use(cors());
+
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cookieParser());
 
+// app.use(cors());
+const corsOptions = {
+    origin: 'http://localhost:5173', // Replace with your frontend's URL
+    credentials: true, // Enable credentials (cookies)
+};
+app.use(cors(corsOptions));
 
 app.use('/api/v1', ProductRouter);
 app.use('/api/v1', userRouter);

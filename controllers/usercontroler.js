@@ -30,25 +30,38 @@ export const Register = async (req, res, next) => {
         }
         const result = await cloudinary.uploader.upload(req.file.path, {
             folder: 'avatars',
+
         });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-
+        console.log(hashedPassword, password, email)
         const user = await UserModel.create({
             name,
             email,
             password: hashedPassword,
-        // Change 'avatar' to 'Avatar' to match the schema
+            // Change 'avatar' to 'Avatar' to match the schema
             Avatar: {
                 public_id: result.public_id,
                 url: result.secure_url,
             },
         });
 
-        console.log(result, 'res')
+        // console.log(result, 'res')
         fs.unlinkSync(req.file.path);
 
-        res.status(201).json({ message: 'User registered successfully', user });
+        // res.status(201).json({ message: 'User registered successfully', user });
+        const token = Jwt.sign({ id: user._id }, process.env.Jwt_secret);
+
+        res.cookie('token', token, {
+            expires: new Date(Date.now() + maxAgeInMilliseconds),
+            // secure: true,
+            httpOnly: true,
+            // sameSite: "none",
+            // path: '/'
+
+        }).json({
+            Message: "cookies are send succesfully"
+        })
     } catch (error) {
         console.error(error);
         res.status(400).json({
@@ -60,23 +73,47 @@ export const Register = async (req, res, next) => {
 
 
 
+
 export const Loginuser = async (req, res, next) => {
     const { email, password } = req.body;
-    console.log(req.body)
+
     if (!email || !password) {
-        return next(new ErrorHandler(400), 'please etner email or password')
+        return next(new ErrorHandler(400, 'Please enter email and password.'));
     }
+
     try {
-        const user = await UserModel.findOne({ email: email }).select("+password");
+        const user = await UserModel.findOne({ email }).select("+password");
+        // console.log(user)
+
         if (!user) {
             return res.status(400).json({ error: 'User not found. Please create an account.' });
         }
+
         const passwordMatch = await bcrypt.compare(password, user.password);
+
         if (!passwordMatch) {
             return res.status(401).json({ error: 'Invalid credentials. Please check your email and password.' });
         }
-        Cookies(res, 200, 'User got succesfully', user)
+        const maxAgeInMilliseconds = 15 * 24 * 60 * 60 * 1000; // 15 days in milliseconds
+
+
+        const token = Jwt.sign({ id: user._id }, process.env.Jwt_secret);
+        // const expirationDate = new Date(Date.now() + maxAgeInMilliseconds 
+
+        res.cookie('token', token, {
+            expires: new Date(Date.now() + maxAgeInMilliseconds),
+            // secure: true,
+            httpOnly: true,
+            // sameSite: "none",
+            // path: '/'
+
+        }).json({
+            Message: "cookies are send succesfully"
+        })
+
+
     } catch (error) {
+        console.log(error)
         return next(error);
     }
 };
@@ -178,7 +215,9 @@ export const GetmYprofile = async (req, res, next) => {
         Message: "Your Profile",
         User: req.user
     })
+
 }
+
 
 export const Logout = async (req, res, next) => {
 
