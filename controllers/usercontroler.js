@@ -55,6 +55,7 @@ export const Register = async (req, res, next) => {
         res.cookie('token', token, {
             expires: new Date(Date.now() + maxAgeInMilliseconds),
             // secure: true,
+            user,
             httpOnly: true,
             // sameSite: "none",
             // path: '/'
@@ -102,7 +103,7 @@ export const Loginuser = async (req, res, next) => {
 
         res.cookie('token', token, {
             expires: new Date(Date.now() + maxAgeInMilliseconds),
-            // secure: true,
+            user,
             httpOnly: true,
             // sameSite: "none",
             // path: '/'
