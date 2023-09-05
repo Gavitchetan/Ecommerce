@@ -21,9 +21,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // app.use(cors());
+// const corsOptions = {
+//     origin: 'http://localhost:5173', // Replace with your frontend's URL
+//     credentials: true, // Enable credentials (cookies)
+// };
+
+
 const corsOptions = {
-    origin: 'http://localhost:5173', // Replace with your frontend's URL
-    credentials: true, // Enable credentials (cookies)
+    origin: '*', // Allow all origins for testing (not recommended for production)
+    credentials: true,
 };
 app.use(cors(corsOptions));
 
