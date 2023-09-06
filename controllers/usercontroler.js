@@ -8,7 +8,7 @@ import sendMessage from "../utils/Messstatus.js";
 import cloudinary from 'cloudinary';
 import fs from 'fs';
 // Other imports...
-
+const ExpireTime = 24 * 60 * 60 * 1000;
 
 export const Register = async (req, res, next) => {
     try {
@@ -53,16 +53,16 @@ export const Register = async (req, res, next) => {
         const token = Jwt.sign({ id: user._id }, process.env.Jwt_secret);
 
         res.cookie('token', token, {
-            expires: new Date(Date.now() + maxAgeInMilliseconds),
-            // secure: true,
+            expires: new Date(Date.now() + ExpireTime),
+            secure: true, // Set to true for production with HTTPS
             httpOnly: true,
-            // sameSite: "none",
-            // path: '/'
-
+            sameSite: "None", // Use "Lax" or "Strict" if needed
         }).json({
-            Message: "cookies are send succesfully",
-            user
-        })
+            Message: "cookies are sent successfully",
+            user,
+        });
+
+
     } catch (error) {
         console.error(error);
         res.status(400).json({
@@ -102,11 +102,10 @@ export const Loginuser = async (req, res, next) => {
         // const expirationDate = new Date(Date.now() + maxAgeInMilliseconds 
 
         res.cookie('token', token, {
-            expires: new Date(Date.now() + maxAgeInMilliseconds),
+            expires: new Date(Date.now() + ExpireTime),
             httpOnly: true,
-            // sameSite: "none",
-            // path: '/'
-
+            sameSite: "None",
+            secure: true
         }).json({
             Message: "cookies are send succesfully",
             user,
