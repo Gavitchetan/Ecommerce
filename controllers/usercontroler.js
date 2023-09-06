@@ -221,14 +221,16 @@ export const GetmYprofile = async (req, res, next) => {
 
 export const Logout = async (req, res, next) => {
 
+
+
     res.cookie('token', '', {
         expires: new Date(Date.now()),
+        secure: true, // Set to true for production with HTTPS
         httpOnly: true,
-
-    }).status(200).json({
-        Message: "logout succesfully",
-
-    })
+        sameSite: "None", // Use "Lax" or "Strict" if needed
+    }).json({
+        Message: "cookies are sent successfully",
+    });
 
 }
 import Jwt from "jsonwebtoken";
