@@ -55,13 +55,13 @@ export const Register = async (req, res, next) => {
         res.cookie('token', token, {
             expires: new Date(Date.now() + maxAgeInMilliseconds),
             // secure: true,
-            user,
             httpOnly: true,
             // sameSite: "none",
             // path: '/'
 
         }).json({
-            Message: "cookies are send succesfully"
+            Message: "cookies are send succesfully",
+            user
         })
     } catch (error) {
         console.error(error);
@@ -77,7 +77,7 @@ export const Register = async (req, res, next) => {
 
 export const Loginuser = async (req, res, next) => {
     const { email, password } = req.body;
-
+    console.log(email, password)
     if (!email || !password) {
         return next(new ErrorHandler(400, 'Please enter email and password.'));
     }
@@ -103,13 +103,13 @@ export const Loginuser = async (req, res, next) => {
 
         res.cookie('token', token, {
             expires: new Date(Date.now() + maxAgeInMilliseconds),
-            user,
             httpOnly: true,
             // sameSite: "none",
             // path: '/'
 
         }).json({
-            Message: "cookies are send succesfully"
+            Message: "cookies are send succesfully",
+            user,
         })
 
 
@@ -222,9 +222,10 @@ export const GetmYprofile = async (req, res, next) => {
 
 export const Logout = async (req, res, next) => {
 
-    res.cookie('token', null, {
+    res.cookie('token', '', {
         expires: new Date(Date.now()),
         httpOnly: true,
+
     }).status(200).json({
         Message: "logout succesfully",
 

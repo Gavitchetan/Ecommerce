@@ -30,7 +30,8 @@ app.use(express.json());
 const corsOptions = {
     origin: 'http://localhost:5173', // Allow all origins for testing (not recommended for production)
     // credentials: true
-    Credential: true
+    // Credential: true
+    credentials: true,
 };
 app.use(cors(corsOptions));
 
