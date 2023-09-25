@@ -3,18 +3,21 @@ const maxAgeInMilliseconds = 15 * 24 * 60 * 60 * 1000; // 15 days in millisecond
 
 const setCookie = (res, statuscode, message, user) => {
     const token = Jwt.sign({ id: user._id }, process.env.Jwt_secret);
-    const expirationDate = new Date(Date.now() + maxAgeInMilliseconds); // Calculate expiration date
-
-    res.status(statuscode).cookie("token", token, {
-        expires: expirationDate, // Set the maxAge to 15 days
+    const expirationDate = new Date(Date.now() + maxAgeInMilliseconds);
+    res.cookie('token', token, {
+        expires: expirationDate,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Set to true in production, false in development
-        sameSite: 'lax', // Specify your preferred 'sameSite' attribute value
+        // sameSite: "None",
+        // secure: true
     }).json({
-        message: message,
-        user: user,
-        token
-    });
+        Message: "cookies are send succesfully",
+        user,
+    })
+
+
+
 }
 
 export default setCookie;
+
+

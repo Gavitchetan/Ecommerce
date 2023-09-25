@@ -15,31 +15,7 @@ export const createProduct = async (req, res, next) => {
 }
 
 
-// The commented-out function is provided below with corrected code:
 
-// export const getAllproduct = async (req, res, next) => {
-//     const resultPerPage = 8;
-//     const productsCount = await Product.countDocuments();
-
-//     const apiFeature = new Apifeacherswithwihtserchfilter(Product.find(), req.query)
-//         .Searches()
-//         .filter();
-
-//     let products = await apiFeature.query;
-//     let filteredProductsCount = products.length;
-
-//     apiFeature.pagination(resultPerPage);
-
-//     products = await apiFeature.query;
-
-//     res.status(200).json({
-//         success: true,
-//         products,
-//         productsCount,
-//         resultPerPage,
-//         filteredProductsCount,
-//     });
-// };
 
 export const getAllproduct = async (req, res, next) => {
     const resultPerPage = 8;
