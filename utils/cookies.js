@@ -12,6 +12,7 @@ const setCookie = (res, statuscode, message, user) => {
     }).json({
         Message: "cookies are send succesfully",
         user,
+        message: 'policia'
     })
 
 
