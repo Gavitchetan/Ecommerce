@@ -7,8 +7,8 @@ const setCookie = (res, statuscode, message, user) => {
     res.cookie('token', token, {
         expires: expirationDate,
         httpOnly: true,
-        sameSite: "None",
-        secure: true
+        // sameSite: "None",
+        // secure: true
     }).json({
         Message: "cookies are send succesfully",
         user,

@@ -2,50 +2,60 @@ import Cartmodel from "../models/Cart.js"
 import jwt from "jsonwebtoken"
 import ErrorHandler from "../middlewares/erorr.js";
 import CartModel from "../models/Cart.js";
+import Product from "../models/productm.js";
 
 
 export const AddTocart = async (req, res, next) => {
     try {
-        const { productId, qty } = req.body
+        const { productId, qty } = req.body;
+        const { token } = req.cookies;
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
 
-        const { token } = req.cookies
+        const decoded = jwt.verify(token, process.env.Jwt_secret);
+        const IsUser = await CartModel.find({ userId: decoded.id })
 
-        const Decode = jwt.verify(token, process.env.Jwt_secret)
-        console.log(Decode.id, 'decode')
-        const { cart } = await Cartmodel.create({
-            userId: Decode.id,
-            productid: productId,
+        // Product is not in the cart, add a new item
+        const imageUrl = product.Image.length > 0 ? product.Image[0].url : '';
+        const cartItem = new CartModel({
+            userId: decoded.id,
             qty: qty,
-        })
+            productId: product._id,
+            product: {
+                name: product.name,
+                price: product.price,
+                url: imageUrl,
+            }
+        });
+        await cartItem.save();
 
-        console.log(cart, 'cart')
-        res.status(201).json({
-            Message: "product is added to cart succesfully",
-            cart
-        })
+        return res.status(201).json({
+            message: 'Product added to cart successfully',
+            cartItem
+        });
     } catch (error) {
-
-        console.log("eror")
-        return next(new ErrorHandler(400, "Internal server Erorr"))
+        console.error("Error:", error);
+        return res.status(500).json({ message: 'Internal server error' });
     }
 }
 
 
 
-
+// get all task of a user according theier id 
 export const GetMycart = async (req, res, next) => {
     try {
         const { token } = req.cookies;
-        const id = req.params
-        console.log(id)
         const Decode = jwt.verify(token, process.env.Jwt_secret);
-        console.log(Decode.id, 'id')
-        console.log(Decode)
+
         const Cart = await CartModel.find({ userId: Decode.id })
+        const Products = Product.find()
         res.status(200).json({
             Cart,
             Message: "hello world"
         })
+
     } catch (error) {
 
     }
@@ -75,6 +85,8 @@ export const FindAndUpdateCart = async (req, res, next) => {
     }
 }
 
+
+// Single cart fetch using id
 export const Mycart = async (req, res, next) => {
     try {
         const { id } = req.params
@@ -90,7 +102,7 @@ export const Mycart = async (req, res, next) => {
     }
 }
 
-
+// Deltee cart items from Database
 export const DeletCartProduct = async (req, res, next) => {
     try {
         const { id } = req.params;
